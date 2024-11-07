@@ -39,7 +39,7 @@ class _PostDetailsState extends ConsumerState<PostDetails> {
     _fetchPost = _fetchPostDetails();
   }
 
-  // 投稿の詳細を取得する
+
   Future<Map<String, dynamic>?> _fetchPostDetails() async {
     final String postUri = widget.post['uri'];
     final bluesky = await ref.read(blueskySessionProvider.future);
@@ -50,7 +50,7 @@ class _PostDetailsState extends ConsumerState<PostDetails> {
         (postsList != null && postsList.isNotEmpty) ? postsList[0] : null;
 
     if (detailedPost == null) {
-      // 何らかのエラーハンドリングを行うか、適切なデフォルト値を設定します。
+
       return {};
     }
     setState(() {
@@ -62,7 +62,7 @@ class _PostDetailsState extends ConsumerState<PostDetails> {
     return detailedPost;
   }
 
-  // 画像をダイアログで表示する
+
   void _showImageDialog(BuildContext context, List<String> imageUrls) {
     showDialog(
       context: context,
@@ -121,29 +121,28 @@ class _PostDetailsState extends ConsumerState<PostDetails> {
     );
   }
 
-  // 投稿の内容を表示する
+
   Widget _buildPostContent(Map<String, dynamic> post) {
     List<Widget> contentWidgets = [];
     List<InlineSpan> spans = [];
 
     final text = post['record']?['text'] ?? '';
 
-    // facetsを取得する。facetsにはリンクやメンションなどの情報が含まれる
+
     final facets = post['record']['facets'] as List? ?? [];
 
-    // 投稿文をバイトの形式でエンコードする
+
     final facetBytes = utf8.encode(text);
     var lastFacetEndByte = 0;
 
-    // 各facetに対する処理
+
     for (final facet in facets) {
       for (final feature in facet['features']) {
         final byteStart = facet['index']['byteStart'];
 
-        // バイトの範囲が投稿文の範囲を超えていたら、範囲を投稿文の範囲に合わせる
+
         final byteEnd = min<int>(facet['index']['byteEnd'], facetBytes.length);
 
-        // 関連するテキスト部分をバイトからデコードする
         final facetText = utf8.decode(
           facetBytes.sublist(
             byteStart,
@@ -151,7 +150,6 @@ class _PostDetailsState extends ConsumerState<PostDetails> {
           ),
         );
 
-        // 前のfacetの終了位置から、現在のfacetの開始位置までのテキストを追加する
         if (facet['index']['byteStart'] > lastFacetEndByte) {
           spans.add(
             TextSpan(
@@ -160,7 +158,6 @@ class _PostDetailsState extends ConsumerState<PostDetails> {
           );
         }
 
-        // facetがリンクの場合の処理
         if (feature['\$type'] == 'app.bsky.richtext.facet#link') {
           spans.add(
             TextSpan(
@@ -184,7 +181,6 @@ class _PostDetailsState extends ConsumerState<PostDetails> {
           );
         }
 
-        // facetがメンションの場合の処理
         else if (feature['\$type'] == 'app.bsky.richtext.facet#mention') {
           spans.add(
             TextSpan(
@@ -203,7 +199,6 @@ class _PostDetailsState extends ConsumerState<PostDetails> {
             ),
           );
         }
-        // その他のfacetの場合の処理
         else {
           spans.add(TextSpan(text: facetText));
         }
@@ -212,11 +207,9 @@ class _PostDetailsState extends ConsumerState<PostDetails> {
       }
     }
 
-    // 最後のfacet以降のテキストを追加する
     spans
         .add(TextSpan(text: utf8.decode(facetBytes.sublist(lastFacetEndByte))));
 
-    // spansに格納されたテキストスパンをリッチテキストウィジェットとしてcontentWidgetsリストに追加する
     contentWidgets.add(
       SelectableText.rich(
         TextSpan(
@@ -226,17 +219,14 @@ class _PostDetailsState extends ConsumerState<PostDetails> {
       ),
     );
 
-    // 投稿に画像が含まれていたら追加する
     if (post['embed'] != null &&
         post['embed']['\$type'] == 'app.bsky.embed.images#view') {
       contentWidgets.add(const SizedBox(height: 10.0));
 
-      // 画像ウィジェットを作成する
       List<String> imageUrls = post['embed']['images']
           .map<String>((dynamic image) => image['fullsize'] as String)
           .toList();
 
-      // タップで画像ダイアログを表示する
       contentWidgets.add(
         GestureDetector(
           onTap: () => _showImageDialog(context, imageUrls),
@@ -268,7 +258,7 @@ class _PostDetailsState extends ConsumerState<PostDetails> {
       );
     }
 
-    // 引用投稿が含まれていたら追加する
+
     contentWidgets.add(_buildQuotedPost(post));
 
     return Column(
@@ -277,7 +267,6 @@ class _PostDetailsState extends ConsumerState<PostDetails> {
     );
   }
 
-  // 引用投稿を表示する
   Widget _buildQuotedPost(Map<String, dynamic> post) {
     if (post['embed'] != null &&
         post['embed']['\$type'] == 'app.bsky.embed.record#view') {
@@ -287,7 +276,6 @@ class _PostDetailsState extends ConsumerState<PostDetails> {
 
       String languageCode = Localizations.localeOf(context).languageCode;
 
-      // 英語と日本語以外の言語の場合、英語をデフォルトとして使用する
       if (languageCode != 'ja') {
         languageCode = 'en';
       }
@@ -300,7 +288,6 @@ class _PostDetailsState extends ConsumerState<PostDetails> {
           final feeds =
               await bluesky.feeds.findPosts(uris: [bsky.AtUri.parse(uri)]);
 
-          // 引用投稿先のJSONを取得する
           final jsonFeed = feeds.data.toJson()['posts'][0];
 
           // ignore: use_build_context_synchronously
@@ -360,7 +347,7 @@ class _PostDetailsState extends ConsumerState<PostDetails> {
     return const SizedBox.shrink();
   }
 
-  // リプライ先の投稿の内容を表示する
+
   Future<Widget> _buildParentPost(
       BuildContext context, Map<String, dynamic> post) async {
     if (post['record']['reply'] == null) {
@@ -373,7 +360,6 @@ class _PostDetailsState extends ConsumerState<PostDetails> {
     final feeds =
         await bluesky.feeds.findPosts(uris: [bsky.AtUri.parse(parentUri)]);
 
-    // 引用投稿先のJSONを取得する
     final parent = feeds.data.toJson()['posts'][0];
 
     if (parent == null) {
@@ -398,7 +384,7 @@ class _PostDetailsState extends ConsumerState<PostDetails> {
 
     return InkWell(
       onTap: () {
-        // 投稿詳細画面への遷移
+        // ignore: use_build_context_synchronously
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -415,7 +401,6 @@ class _PostDetailsState extends ConsumerState<PostDetails> {
             children: [
               GestureDetector(
                 onTap: () {
-                  // ユーザー詳細画面への遷移
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -470,7 +455,6 @@ class _PostDetailsState extends ConsumerState<PostDetails> {
     );
   }
 
-  // リプライ先のスレッドの内容を表示する
   Future<Widget> _buildThreadPost(
       BuildContext context, Map<String, dynamic> post) async {
     final recordUri = post['uri'];
@@ -479,7 +463,6 @@ class _PostDetailsState extends ConsumerState<PostDetails> {
     final thread =
         await bluesky.feeds.findPostThread(uri: bsky.AtUri.parse(recordUri));
 
-    // 引用投稿先のJSONを取得する
     final replies = thread.data.toJson()['thread']['replies'];
 
     if (replies == null) {
@@ -511,7 +494,7 @@ class _PostDetailsState extends ConsumerState<PostDetails> {
             if (index != 0) const Divider(color: Colors.white38, height: 1.0),
             InkWell(
               onTap: () {
-                // 投稿詳細画面への遷移
+
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -530,7 +513,6 @@ class _PostDetailsState extends ConsumerState<PostDetails> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          // ユーザー詳細画面への遷移
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -761,7 +743,7 @@ class _PostDetailsState extends ConsumerState<PostDetails> {
                                                 blueskySessionProvider.future);
 
                                             if (isReposted) {
-                                              // リポストを取り消し
+
                                               await bluesky.repositories
                                                   .deleteRecord(
                                                 uri: bsky.AtUri.parse(
@@ -772,7 +754,7 @@ class _PostDetailsState extends ConsumerState<PostDetails> {
                                                 _isReposted = false;
                                               });
                                             } else {
-                                              // リポスト処理
+
                                               final repostedRecord =
                                                   await bluesky.feeds
                                                       .createRepost(
@@ -781,7 +763,6 @@ class _PostDetailsState extends ConsumerState<PostDetails> {
                                                     post['uri']),
                                               );
 
-                                              // リポストを取り消せるようにリポストした投稿のURIを保存しておく
                                               post['viewer']['repost'] =
                                                   repostedRecord.data.uri
                                                       .toString();
@@ -793,7 +774,7 @@ class _PostDetailsState extends ConsumerState<PostDetails> {
 
                                             // ignore: use_build_context_synchronously
                                             Navigator.of(context)
-                                                .pop(); // BottomSheetを閉じる
+                                                .pop(); // BottomSheet
                                           },
                                         ),
                                         ListTile(
@@ -804,7 +785,7 @@ class _PostDetailsState extends ConsumerState<PostDetails> {
                                                   .quote),
                                           onTap: () {
                                             Navigator.of(context)
-                                                .pop(); // BottomSheetを閉じる
+                                                .pop(); // BottomSheet
                                             Navigator.push(
                                               context,
                                               MaterialPageRoute(
@@ -843,12 +824,11 @@ class _PostDetailsState extends ConsumerState<PostDetails> {
                                   await ref.read(blueskySessionProvider.future);
 
                               if (isLiked) {
-                                // いいねを取り消し
+
                                 await bluesky.repositories.deleteRecord(
                                   uri: bsky.AtUri.parse(post['viewer']['like']),
                                 );
                               } else {
-                                // いいね処理
                                 final likedRecord =
                                     await bluesky.feeds.createLike(
                                   cid: post['cid'],
@@ -865,7 +845,6 @@ class _PostDetailsState extends ConsumerState<PostDetails> {
                             icon: const Icon(Icons.more_horiz),
                             onSelected: (value) {
                               if (value == "report") {
-                                // TODO: 投稿を報告する処理をここに書く
                                 // ignore: use_build_context_synchronously
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
@@ -899,7 +878,6 @@ class _PostDetailsState extends ConsumerState<PostDetails> {
                           const SizedBox(width: 10.0),
                           GestureDetector(
                             onTap: () {
-                              // リポストの数字がタップされたときの処理をここに追加します
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -918,7 +896,6 @@ class _PostDetailsState extends ConsumerState<PostDetails> {
                                 ),
                                 const SizedBox(height: 2.0),
                                 Text(
-                                  // リポスト数が2以上のときは複数形を表示する
                                   2 <= post['repostCount']
                                       ? AppLocalizations.of(context)!.reposts
                                       : AppLocalizations.of(context)!.repost,

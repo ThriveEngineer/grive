@@ -4,8 +4,6 @@ import 'package:timeago/timeago.dart' as timeago;
 import 'package:skyclad/repository/shared_preferences_repository.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-// 別スクリーン
 import 'package:skyclad/view/timeline.dart';
 import 'package:skyclad/view/login.dart';
 
@@ -37,7 +35,7 @@ void main() async {
   );
 }
 
-// プロバイダー
+// Provider
 final isLoggedInProvider =
     StateNotifierProvider<IsLoggedInNotifier, bool>((ref) {
   return IsLoggedInNotifier();

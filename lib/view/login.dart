@@ -51,7 +51,7 @@ class LoginScreen extends ConsumerWidget {
                 obscureText: true,
                 decoration: InputDecoration(
                   labelText: 'App Password',
-                  hintText: 'Enter your app password',
+                  hintText: 'Enter your password',
                   suffixIcon: Padding(
                     padding: const EdgeInsets.only(right: 6.0),
                     child: IconButton(
@@ -69,39 +69,37 @@ class LoginScreen extends ConsumerWidget {
               const SizedBox(height: 32.0),
               ElevatedButton(
                 onPressed: () async {
-                  // 入力された認証情報を取得
+
                   String service = _serviceController.text.trim();
                   String id = _usernameController.text.trim();
                   final password = _passwordController.text.trim();
 
                   if (service.isEmpty) {
-                    //* サービスが未入力の場合は"bsky.social"を強制する
+
                     service = _serviceController.text = _defaultService;
                   }
 
                   if (!id.contains('.')) {
-                    //* ドメインの入力を省略可能にする。
+
                     id += '.$service';
                   }
 
-                  // ログイン処理を実行
+
                   try {
                     if (!bsky.isValidAppPassword(password)) {
-                      //! App Passwordの使用を強制する。
+                      //! App Password
                       throw Exception('Not a valid app password.');
                     }
 
                     await ref
                         .read(loginStateProvider.notifier)
                         .login(service, id, password);
-                    // ログイン成功後の画面遷移を行います
                     // ignore: use_build_context_synchronously
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(builder: (context) => const Timeline()),
                     );
                   } catch (e) {
-                    // ログインに失敗した場合の処理
 
                     // ignore: use_build_context_synchronously
                     ScaffoldMessenger.of(context).showSnackBar(

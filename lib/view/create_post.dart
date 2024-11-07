@@ -76,20 +76,20 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
                 child: const Icon(Icons.add_photo_alternate),
               ),
             ),
-            // 引用ポストの内容を表示
+
             if (widget.quoteJson != null) ...[
               const SizedBox(height: 16.0),
               _displayQuotedPost(widget.quoteJson!),
               const SizedBox(height: 16.0),
             ],
-            // 選択した画像をサムネイルとして表示する
+
             Container(
               alignment: Alignment.centerLeft,
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Wrap(
-                  spacing: 8.0, // 列間
-                  runSpacing: 4.0, // 行間
+                  spacing: 8.0,
+                  runSpacing: 4.0,
                   children: imageFiles.asMap().entries.map((entry) {
                     int index = entry.key;
                     File file = entry.value;
@@ -142,18 +142,18 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
     final bluesky = await ref.watch(blueskySessionProvider.future);
     final blueskyText = BlueskyText(text);
 
-    // テキストを解析して、ファセットを取得する
+
     final facets = await blueskyText.entities.toFacets();
 
-    // リプライ先の情報を取得する
+
     final replyUri = replyJson?['uri'];
     final replyCid = replyJson?['cid'];
 
-    // 引用ポストの情報を取得する
+
     final quoteUri = quoteJson?['uri'];
     final quoteCid = quoteJson?['cid'];
 
-    // 画像をアップロードする
+
     List<bsky.Image> images = [];
     for (var imageFile in imageFiles) {
       final uploaded = await bluesky.repositories.uploadBlob(
@@ -168,7 +168,7 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
       );
     }
 
-    // 画像がある場合は画像を添付する
+
     bsky.Embed? embed = images.isNotEmpty
         ? bsky.Embed.images(
             data: bsky.EmbedImages(
@@ -177,7 +177,7 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
           )
         : null;
 
-    // 引用ポストの情報をembedに追加
+
     if (quoteUri != null && quoteCid != null) {
       embed = bsky.Embed.record(
         data: bsky.EmbedRecord(
@@ -189,7 +189,7 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
       );
     }
 
-    // リプライ先がない場合は通常の投稿を行う
+
     if (replyUri == null) {
       await bluesky.feeds.createPost(
         text: blueskyText.value,

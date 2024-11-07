@@ -7,18 +7,14 @@ import 'package:skyclad/providers/providers.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-// 別スクリーン
 import 'package:skyclad/view/notifications.dart';
 import 'package:skyclad/view/user_profile.dart';
 import 'package:skyclad/view/login.dart';
 import 'package:skyclad/view/post_details.dart';
 import 'package:skyclad/view/create_post.dart';
-
-// ウィジェット
 import 'package:skyclad/widgets/post_widget.dart';
 
-// ウィジェット
+
 class Timeline extends ConsumerStatefulWidget {
   const Timeline({Key? key}) : super(key: key);
 
@@ -53,12 +49,11 @@ class _TimelineState extends ConsumerState<Timeline> {
       ],
       supportedLocales: const [
         Locale('en'), // English
-        Locale('ja'), // Japanese
+        Locale('de'), // German
       ],
     );
   }
 
-  // AppBarを生成する関数
   AppBar? _buildAppBar(int currentIndex) {
     if (currentIndex == 2) return null;
     return AppBar(
@@ -72,17 +67,15 @@ class _TimelineState extends ConsumerState<Timeline> {
     );
   }
 
-  // タイムラインのコンテンツを生成する関数
   Widget _buildBody(int currentIndex) {
     return FutureBuilder<String>(
       future: ref.read(sharedPreferencesRepositoryProvider).getId(),
       builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const CircularProgressIndicator(); // データがまだ来ていないときはローディングインジケータを表示
+          return const CircularProgressIndicator();
         } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}'); // エラーが発生した場合はエラーメッセージを表示
+          return Text('Error: ${snapshot.error}');
         } else {
-          // データがロードされたらそれを使用してUIを構築
           final id = snapshot.data;
           return [
             BlueskyTimeline(
@@ -96,7 +89,7 @@ class _TimelineState extends ConsumerState<Timeline> {
     );
   }
 
-  // BottomNavigationBarを生成する関数
+  // BottomNavigationBar
   BottomNavigationBar _buildBottomNavigationBar(int currentIndex) {
     return BottomNavigationBar(
       type: BottomNavigationBarType.fixed,
@@ -124,7 +117,7 @@ class _TimelineState extends ConsumerState<Timeline> {
     );
   }
 
-  // Drawerを生成する関数
+  // Drawer
   Drawer _buildDrawer(BuildContext context) {
     return Drawer(
       child: ListView(
@@ -136,11 +129,10 @@ class _TimelineState extends ConsumerState<Timeline> {
           ListTile(
             title: Text(AppLocalizations.of(context)!.logout),
             onTap: () async {
-              // ログアウト処理
               final sharedPreferences = await SharedPreferences.getInstance();
               sharedPreferences.remove('service');
               sharedPreferences.remove('id');
-              sharedPreferences.remove('password'); // ログイン画面に遷移
+              sharedPreferences.remove('password');
 
               // ignore: use_build_context_synchronously
               Navigator.pushReplacement(
@@ -156,7 +148,7 @@ class _TimelineState extends ConsumerState<Timeline> {
     );
   }
 
-  // FloatingActionButtonを生成する関数
+  // FloatingActionButton
   FloatingActionButton _buildFloatingActionButton(BuildContext context) {
     return FloatingActionButton(
       onPressed: () {
@@ -192,7 +184,6 @@ class BlueskyTimelineState extends ConsumerState<BlueskyTimeline> {
   String? _nextCursor;
   final bool _hasMoreData = true;
 
-  // 初期化処理
   @override
   void initState() {
     super.initState();
@@ -219,7 +210,6 @@ class BlueskyTimelineState extends ConsumerState<BlueskyTimeline> {
     PrimaryScrollController.of(context).removeListener(_scrollListener);
   }
 
-  // タイムラインを取得する
   Future<void> _fetchTimeline() async {
     final data = await _fetchTimelineData();
 
@@ -233,7 +223,6 @@ class BlueskyTimelineState extends ConsumerState<BlueskyTimeline> {
     });
   }
 
-  // タイムラインを更新する
   Future<void> _refreshTimeline() async {
     final data = await _fetchTimelineData();
     setState(() {
@@ -242,7 +231,6 @@ class BlueskyTimelineState extends ConsumerState<BlueskyTimeline> {
     });
   }
 
-  // タイムラインデータを追加で取得する
   Future<void> _loadMoreTimelineData() async {
     if (!_isFetchingMore && _hasMoreData) {
       setState(() {
@@ -263,17 +251,13 @@ class BlueskyTimelineState extends ConsumerState<BlueskyTimeline> {
     final bluesky = await ref.read(blueskySessionProvider.future);
     final feeds = await bluesky.feeds.findTimeline(limit: 100, cursor: cursor);
 
-    // タイムラインのJSONを取得する
     final jsonFeeds = feeds.data.toJson()['feed'];
 
-    // カーソルを更新
     _cursor = feeds.data.toJson()['cursor'];
 
-    // タイムラインのフィードとカーソルを返す
     return {'feed': jsonFeeds, 'cursor': _cursor};
   }
 
-  // 投稿がリポストだった場合にリポストであることを表記したウィジェットを作成する
   Widget _buildRepostedBy(Map<String, dynamic> feed) {
     if (feed['reason'] != null &&
         feed['reason']['\$type'] == 'app.bsky.feed.defs#reasonRepost') {
@@ -289,7 +273,6 @@ class BlueskyTimelineState extends ConsumerState<BlueskyTimeline> {
     return const SizedBox.shrink();
   }
 
-  // 投稿がリプライだった場合にリプライであることを表記したウィジェットを作成する
   Widget _buildRepliedBy(Map<String, dynamic> feed) {
     if (feed['reply'] != null) {
       final repliedTo = feed['reply']['parent']['author'];
@@ -306,7 +289,6 @@ class BlueskyTimelineState extends ConsumerState<BlueskyTimeline> {
     return const SizedBox.shrink();
   }
 
-  // タイムラインを表示する
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
@@ -318,7 +300,6 @@ class BlueskyTimelineState extends ConsumerState<BlueskyTimeline> {
       child: ListView.builder(
         itemCount: _timelineData.length + 1,
         itemBuilder: (context, index) {
-          // 最後の要素の場合、_hasMoreData が true ならローディングアイコンを表示、そうでなければ空のコンテナを表示
           if (index == _timelineData.length) {
             return _hasMoreData
                 ? const Center(child: CircularProgressIndicator())
@@ -332,7 +313,6 @@ class BlueskyTimelineState extends ConsumerState<BlueskyTimeline> {
 
           String languageCode = Localizations.localeOf(context).languageCode;
 
-          // 英語と日本語以外の言語の場合、英語をデフォルトとして使用する
           if (languageCode != 'ja') {
             languageCode = 'en';
           }

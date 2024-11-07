@@ -29,7 +29,7 @@ final blueskySessionProvider = StreamProvider<bsky.Bluesky>((ref) async* {
 
     yield bluesky;
 
-    // 10分ごとにセッションをリフレッシュ
+
     await Future.delayed(const Duration(minutes: 10));
   }
 });
@@ -59,7 +59,7 @@ class LoginStateNotifier extends StateNotifier<bool> {
         identifier: id,
         password: password,
       );
-      // ログインに成功したら、認証情報を保存
+
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('service', service);
       await prefs.setString('id', id);
@@ -67,7 +67,7 @@ class LoginStateNotifier extends StateNotifier<bool> {
 
       state = true;
     } catch (e) {
-      // ログインに失敗した場合の処理
+
       throw Exception('Login failed.');
     }
   }

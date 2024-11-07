@@ -17,7 +17,7 @@ class NotificationScreen extends ConsumerWidget {
     return record?['text'] ?? '';
   }
 
-  // 通知と投稿を取得する
+
   Future<Map<String, List<dynamic>>> fetchNotificationsAndPosts(
       bsky.Bluesky bluesky) async {
     final notifications = await bluesky.notifications.findNotifications();
@@ -31,7 +31,7 @@ class NotificationScreen extends ConsumerWidget {
 
     List<dynamic> postsJson = [];
 
-    // 25件が投稿を取得できるリミットなので25件ずつ投稿を取得する
+
     int batchSize = 25;
     for (int i = 0; i < uris.length; i += batchSize) {
       final batchUris = uris.sublist(i, min(i + batchSize, uris.length));
@@ -111,7 +111,7 @@ class NotificationScreen extends ConsumerWidget {
                         ListTile(
                           leading: GestureDetector(
                             onTap: () {
-                              // ユーザー詳細画面への遷移
+
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -146,7 +146,7 @@ class NotificationScreen extends ConsumerWidget {
                                   color: Colors.blue)
                               : null,
                           onTap: () {
-                            // 投稿詳細画面への遷移
+
                             if (post.isNotEmpty) {
                               Navigator.push(
                                 context,

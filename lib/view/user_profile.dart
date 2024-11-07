@@ -5,11 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skyclad/providers/providers.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-// ウィジェット
 import 'package:skyclad/widgets/post_widget.dart';
-
-// 別スクリーン
 import 'package:skyclad/view/post_details.dart';
 
 class UserProfileState {
@@ -57,7 +53,7 @@ class UserProfileScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // UserProfileNotifierを初期化します。
+
     ref.read(userProfileProvider.notifier).initUserProfile(actor: actor);
 
     return Scaffold(
@@ -87,7 +83,7 @@ class UserProfileScreen extends ConsumerWidget {
     );
   }
 
-  // ユーザーをフォローする
+
   Future<void> followUser(
       BuildContext context, WidgetRef ref, String did) async {
     final bluesky = await ref.read(blueskySessionProvider.future);
@@ -108,7 +104,7 @@ class UserProfileScreen extends ConsumerWidget {
     }
   }
 
-// ユーザーのフォローを解除する
+
   Future<void> unfollowUser(
       BuildContext context, WidgetRef ref, String did) async {
     final bluesky = await ref.read(blueskySessionProvider.future);
@@ -132,7 +128,7 @@ class UserProfileScreen extends ConsumerWidget {
     }
   }
 
-  // 投稿のプロフィールを表示するウィジェットを作成する
+
   Widget buildProfileHeader(
       BuildContext context, WidgetRef ref, Map<String, dynamic> profile) {
     return Padding(
@@ -202,7 +198,7 @@ class UserProfileScreen extends ConsumerWidget {
     );
   }
 
-  // 投稿のカードを表示するウィジェットを作成する
+
   Widget buildPostCard(BuildContext context, dynamic feed) {
     final post = feed['post'];
     final author = post['author'];
@@ -210,7 +206,7 @@ class UserProfileScreen extends ConsumerWidget {
 
     String languageCode = Localizations.localeOf(context).languageCode;
 
-// 英語と日本語以外の言語の場合、英語をデフォルトとして使用する
+
     if (languageCode != 'ja') {
       languageCode = 'en';
     }
@@ -314,7 +310,7 @@ class UserProfileScreen extends ConsumerWidget {
     ]);
   }
 
-  // 投稿がリポストだった場合にリポストであることを表記したウィジェットを作成する
+
   Widget _buildRepostedBy(Map<String, dynamic> feed) {
     if (feed['reason'] != null &&
         feed['reason']['\$type'] == 'app.bsky.feed.defs#reasonRepost') {
@@ -330,7 +326,7 @@ class UserProfileScreen extends ConsumerWidget {
     return const SizedBox.shrink();
   }
 
-  // 投稿がリプライだった場合にリプライであることを表記したウィジェットを作成する
+
   Widget _buildRepliedBy(Map<String, dynamic> feed) {
     if (feed['reply'] != null) {
       final repliedTo = feed['reply']['parent']['author'];

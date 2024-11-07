@@ -1,20 +1,20 @@
 {
-  "@@locale": "ja",
-  "timeline": "タイムライン",
-  "notifications": "通知",
-  "profile": "プロフィール",
-  "logout": "ログアウト",
-  "cancel": "キャンセル",
-  "post": "投稿",
-  "like": "いいね",
-  "likes": "いいね",
-  "repost": "リポスト",
-  "reposts": "リポスト",
-  "doRepost": "リポストする",
-  "undoRepost": "リポストを取り消す",
-  "reply": "返信",
-  "quote": "引用ポスト",
-  "followNotification": "{name}さんがあなたをフォローしました。",
+  "@@locale": "de",
+  "timeline": "Zeitlinie",
+  "notifications": "Narichten",
+  "profile": "Profile",
+  "logout": "Ausloggen",
+  "cancel": "Abbrechen",
+  "post": "Post",
+  "like": "like",
+  "likes": "likes",
+  "repost": "Reposten",
+  "reposts": "Reposts",
+  "doRepost": "Neu posten",
+  "undoRepost": "Zurück",
+  "reply": "Reply",
+  "quote": "Quote",
+  "followNotification": "{name}Abo Benarichtiegung",
   "@followNotification": {
     "placeholders": {
       "name": {
@@ -23,7 +23,7 @@
       }
     }
   },
-  "likeNotification": "{name}さんがあなたの投稿にいいね！しました。",
+  "likeNotification": "{name} Liked deinen Post",
   "@likeNotification": {
     "placeholders": {
       "name": {
@@ -32,7 +32,7 @@
       }
     }
   },
-  "repostNotification": "{name}さんがあなたの投稿をリポストしました。",
+  "repostNotification": "{name} Hat dein Post erneut gepostet",
   "@repostNotification": {
     "placeholders": {
       "name": {
@@ -41,7 +41,7 @@
       }
     }
   },
-  "replyNotification": "{name}さんがあなたの投稿にリプライしました。",
+  "replyNotification": "{name} Hat auf dein Post geantwortet",
   "@replyNotification": {
     "placeholders": {
       "name": {
@@ -50,7 +50,7 @@
       }
     }
   },
-  "mentionNotification": "{name}さんがあなたにメンションしました。",
+  "mentionNotification": "{name} Du wurdest Erwähnt",
   "@mentionNotification": {
     "placeholders": {
       "name": {
@@ -59,7 +59,7 @@
       }
     }
   },
-  "quoteNotification": "{name}さんがあなたの投稿を引用ポストしました。",
+  "quoteNotification": "{name} Quote",
   "@quoteNotification": {
     "placeholders": {
       "name": {
@@ -68,22 +68,22 @@
       }
     }
   },
-  "unknownNotification": "不明な通知です。",
-  "reportPost": "投稿を報告する",
-  "postReported": "投稿を報告しました。",
-  "whatsUp": "今、なにしてる？",
-  "errorFailedToOpenUrl": "リンクを開けませんでした。",
-  "repostedUser":"リポストしたユーザー",
-  "noUsersReposted":"リポストしたユーザーはいません",  
-  "likedUser": "いいねしたユーザー",
-  "noUsersLiked": "いいねしたユーザーはいません",
-  "follow": "フォロー",
-  "unfollow": "フォロー解除",
-  "followers": "フォロワー",
-  "following": "フォロー中",
-  "followFaildMessage": "フォローに失敗しました。時間をおいて再度やり直してください。",
-  "unfollowFaildMessage": "アンフォローに失敗しました。時間をおいて再度やり直してください。",
-  "followsYou": "フォローされています",
+  "unknownNotification": "Unbekannte Benarichtigung",
+  "reportPost": "Post melden",
+  "postReported": "Post wurde gemeldet",
+  "whatsUp": "Was geht",
+  "errorFailedToOpenUrl": "Link konnte nicht geöfnet werden",
+  "repostedUser":"Reposted user",
+  "noUsersReposted":"Keine Nutzer reposted",  
+  "likedUser": "Gelikede Nutzer",
+  "noUsersLiked": "Keine Nutzer haben geliked",
+  "follow": "Folgen",
+  "unfollow": "Nicht mehr Folgen",
+  "followers": "Followers",
+  "following": "Following",
+  "followFaildMessage": "Follow Failed Message",
+  "unfollowFaildMessage": "Gescheitert",
+  "followsYou": "Folgt dir",
   "@helloWorld": {
     "description": "The conventional newborn programmer greeting"
   }

@@ -11,16 +11,16 @@ import 'package:card_swiper/card_swiper.dart';
 import 'package:skyclad/providers/providers.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-// 別スクリーン
+
 import 'package:skyclad/view/post_details.dart';
 
-// 投稿の詳細を取得するための FutureProvider
+// FutureProvider
 final quotedPostProvider =
     FutureProvider.family<Map<String, dynamic>, String>((ref, uri) async {
   final bluesky = await ref.read(blueskySessionProvider.future);
   final feeds = await bluesky.feeds.findPosts(uris: [bsky.AtUri.parse(uri)]);
 
-  // 引用投稿先のJSONを取得する
+
   final jsonFeed = feeds.data.toJson()['posts'][0];
 
   return jsonFeed;
@@ -31,7 +31,7 @@ class PostWidget extends ConsumerWidget {
 
   const PostWidget({required this.post, Key? key}) : super(key: key);
 
-  // 投稿のウィジェットを作成する
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     List<Widget> contentWidgets = [];
@@ -39,22 +39,22 @@ class PostWidget extends ConsumerWidget {
 
     final text = post['record']?['text'] ?? '';
 
-    // facetsを取得する。facetsにはリンクやメンションなどの情報が含まれる
+
     final facets = post['record']['facets'] as List? ?? [];
 
-    // 投稿文をバイトの形式でエンコードする
+
     final facetBytes = utf8.encode(text);
     var lastFacetEndByte = 0;
 
-    // 各facetに対する処理
+
     for (final facet in facets) {
       for (final feature in facet['features']) {
         final byteStart = facet['index']['byteStart'];
 
-        // バイトの範囲が投稿文の範囲を超えていたら、範囲を投稿文の範囲に合わせる
+
         final byteEnd = min<int>(facet['index']['byteEnd'], facetBytes.length);
 
-        // 関連するテキスト部分をバイトからデコードする
+
         final facetText = utf8.decode(
           facetBytes.sublist(
             byteStart,
@@ -62,7 +62,7 @@ class PostWidget extends ConsumerWidget {
           ),
         );
 
-        // 前のfacetの終了位置から、現在のfacetの開始位置までのテキストを追加する
+
         if (facet['index']['byteStart'] > lastFacetEndByte) {
           spans.add(
             TextSpan(
@@ -71,7 +71,7 @@ class PostWidget extends ConsumerWidget {
           );
         }
 
-        // facetがリンクの場合の処理
+
         if (feature['\$type'] == 'app.bsky.richtext.facet#link') {
           spans.add(
             TextSpan(
@@ -95,7 +95,7 @@ class PostWidget extends ConsumerWidget {
           );
         }
 
-        // facetがメンションの場合の処理
+
         else if (feature['\$type'] == 'app.bsky.richtext.facet#mention') {
           spans.add(
             TextSpan(
@@ -114,7 +114,7 @@ class PostWidget extends ConsumerWidget {
             ),
           );
         }
-        // その他のfacetの場合の処理
+
         else {
           spans.add(TextSpan(text: facetText));
         }
@@ -123,11 +123,11 @@ class PostWidget extends ConsumerWidget {
       }
     }
 
-    // 最後のfacet以降のテキストを追加する
+
     spans
         .add(TextSpan(text: utf8.decode(facetBytes.sublist(lastFacetEndByte))));
 
-    // spansに格納されたテキストスパンをリッチテキストウィジェットとしてcontentWidgetsリストに追加する
+
     contentWidgets.add(
       RichText(
         text: TextSpan(
@@ -137,17 +137,17 @@ class PostWidget extends ConsumerWidget {
       ),
     );
 
-    // 投稿に画像が含まれていたら追加する
+
     if (post['embed'] != null &&
         post['embed']['\$type'] == 'app.bsky.embed.images#view') {
       contentWidgets.add(const SizedBox(height: 10.0));
 
-      // 画像ウィジェットを作成する
+
       List<String> imageUrls = post['embed']['images']
           .map<String>((dynamic image) => image['fullsize'] as String)
           .toList();
 
-      // タップで画像ダイアログを表示する
+
       contentWidgets.add(
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
@@ -182,7 +182,7 @@ class PostWidget extends ConsumerWidget {
       );
     }
 
-    // 引用投稿が含まれていたら追加する
+
     contentWidgets.add(_buildQuotedPost(context, ref, post));
 
     return Column(
@@ -191,7 +191,7 @@ class PostWidget extends ConsumerWidget {
     );
   }
 
-// 引用投稿のウィジェットを作成する
+
   Widget _buildQuotedPost(
       BuildContext context, WidgetRef ref, Map<String, dynamic> post) {
     if (post['embed'] != null &&
@@ -271,7 +271,7 @@ class PostWidget extends ConsumerWidget {
     return const SizedBox.shrink();
   }
 
-  // 画像をダイアログで表示する
+
   void _showImageDialog(
       BuildContext context, List<String> imageUrls, int initialIndex) {
     showDialog(
