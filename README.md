@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Skyclad
 
 Skyclad is an experimental ATP/Bluesky client app for iOS and Android by Flutter.
@@ -42,3 +43,7 @@ $ flutter run
 ## Notes
 
 I'm developing this app in my free time, so I appreciate feedback and welcome PRs!
+=======
+# grive
+A Social Media app that uses AT Protocol
+>>>>>>> 25f282f8e0a91a3239bfe38bd2e7a807fc9793f5
